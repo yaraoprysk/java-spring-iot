@@ -39,6 +39,7 @@ public class StudentsController {
     public Student createStudent(@RequestBody Student student) {
         student.setId(idCounter.incrementAndGet());
         students.put(student.getId(), student);
+        studentService.createStudent(student);
         return student;
     }
 
