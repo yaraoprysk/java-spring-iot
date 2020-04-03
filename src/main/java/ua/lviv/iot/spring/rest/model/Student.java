@@ -1,47 +1,62 @@
 package ua.lviv.iot.spring.rest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Entity;
 import javax.persistence.*;
 
 @Entity
 public class Student {
-    private String firsStudent;
-    private String secondStudent;
+    private String firstName;
+    private String lastName;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    public Student(String firstStudent, String secondStudent) {
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="group_id")
+    @JsonIgnoreProperties("students")
+    private Group group;
+
+    public Student(String firstName, String lastName) {
         super();
-        this.firsStudent = firstStudent;
-        this.secondStudent = secondStudent;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public Student() {
     }
 
-    public String getSecondStudent() {
-        return secondStudent;
+    public String getFirstName() {
+        return this.firstName;
     }
 
-    public void setSecondStudent(String secondStudent) {
-        this.secondStudent = secondStudent;
+    public String getLastName() {
+        return this.lastName;
     }
 
-    public String getFirsStudent() {
-        return firsStudent;
+    public void setFirstName(String firstName) {
+        this.firstName =  firstName;
     }
 
-    public void setFirsStudent(String firsStudent) {
-        this.firsStudent = firsStudent;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public Integer getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Integer id) {
         this.id = id;
     }
 
+    public Group getGroup() {
+        return this.group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
 }
