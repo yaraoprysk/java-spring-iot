@@ -31,8 +31,11 @@ public class StudentsController {
     }
 
     @GetMapping
-    public List<Student> getStudents(){
-        return new LinkedList<Student>(students.values());
+    public List<Student> getStudents(final @RequestParam(name = "firstName", required = false) String firstName){
+        if (firstName == null) {
+            return studentService.findAll();
+        }
+        return studentService.getAllByFirstName(firstName);
     }
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -46,12 +49,14 @@ public class StudentsController {
     @PutMapping(path = "/{id}")
     public Student updateStudent(@PathVariable("id") Integer studentId, @RequestBody Student student){
         student.setId(studentId);
+        studentService.updateStudent(student, studentId);
         return students.put(studentId, student);
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity deleteStudent(@PathVariable("id") Integer studentId){
         HttpStatus status = students.remove(studentId) == null ? HttpStatus.NOT_FOUND : HttpStatus.OK;
+        studentService.deleteStudent(studentId);
         return ResponseEntity.status(status).build();
     }
 

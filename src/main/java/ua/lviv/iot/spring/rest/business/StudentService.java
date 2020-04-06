@@ -17,6 +17,7 @@ public class StudentService {
     public Student createStudent(Student student) {
         return studentRepository.save(student);
     }
+
     public ResponseEntity<Student> getStudent(Integer studentId) {
         if(studentRepository.existsById(studentId)) {
             Student selectedSweater = studentRepository.findById(studentId).get();
@@ -53,4 +54,7 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
+    public List<Student> getAllByFirstName(String firstName){
+        return studentRepository.findAllByFirstName(firstName);
+    }
 }
