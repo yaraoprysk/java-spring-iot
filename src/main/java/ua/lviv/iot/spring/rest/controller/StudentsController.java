@@ -7,27 +7,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.lviv.iot.spring.rest.business.StudentService;
 import ua.lviv.iot.spring.rest.model.Student;
-
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 @RequestMapping("/students")
 @RestController
 public class StudentsController {
 
-    private Map<Integer, Student> students = new HashMap<>();
-    private AtomicInteger idCounter = new AtomicInteger();
-
     @Autowired
     private StudentService studentService;
 
     @GetMapping(path = "/{id}")
-    public Student getStudent(@PathVariable("id") Integer studentId) {
-        return students.get(studentId);
+    public ResponseEntity<Student> getStudent(@PathVariable("id") Integer studentId) {
+        Student student = studentService.findById(studentId);
+        if (student != null) {
+            return new ResponseEntity<>(student, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping
@@ -39,25 +36,32 @@ public class StudentsController {
     }
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public Student createStudent(@RequestBody Student student) {
-        student.setId(idCounter.incrementAndGet());
-        students.put(student.getId(), student);
-        studentService.createStudent(student);
-        return student;
+    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
+        Student newStudent = studentService.create(student);
+        if (newStudent != null) {
+            return new ResponseEntity<>(student, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping(path = "/{id}")
-    public Student updateStudent(@PathVariable("id") Integer studentId, @RequestBody Student student){
-        student.setId(studentId);
-        studentService.updateStudent(student, studentId);
-        return students.put(studentId, student);
+    public ResponseEntity<Student> updateStudent(@PathVariable("id") Integer studentId, @RequestBody Student student){
+        Student oldStudent = studentService.updateStudent(student, studentId);
+        if (oldStudent != null) {
+            return new ResponseEntity<>(oldStudent, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity deleteStudent(@PathVariable("id") Integer studentId){
-        HttpStatus status = students.remove(studentId) == null ? HttpStatus.NOT_FOUND : HttpStatus.OK;
-        studentService.deleteStudent(studentId);
-        return ResponseEntity.status(status).build();
+    public ResponseEntity<Student> deleteStudent(@PathVariable("id") Integer studentId){
+        if (studentService.delete(studentId) != null) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     public StudentService getStudentService() {
