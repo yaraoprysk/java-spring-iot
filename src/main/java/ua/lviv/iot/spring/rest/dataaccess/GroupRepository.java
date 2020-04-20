@@ -6,5 +6,4 @@ import ua.lviv.iot.spring.rest.model.Group;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Integer> {
-
 }
