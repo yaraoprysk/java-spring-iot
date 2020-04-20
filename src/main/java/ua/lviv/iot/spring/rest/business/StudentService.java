@@ -1,8 +1,7 @@
 package ua.lviv.iot.spring.rest.business;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import ua.lviv.iot.spring.rest.dataaccess.StudentRepository;
 import ua.lviv.iot.spring.rest.model.Student;
@@ -10,44 +9,25 @@ import ua.lviv.iot.spring.rest.model.Student;
 import java.util.List;
 
 @Service
-public class StudentService {
+public class StudentService extends AbstractService<Student>{
+
     @Autowired
     private StudentRepository studentRepository;
 
-    public Student createStudent(Student student) {
-        return studentRepository.save(student);
-    }
-
-    public ResponseEntity<Student> getStudent(Integer studentId) {
-        if(studentRepository.existsById(studentId)) {
-            Student selectedSweater = studentRepository.findById(studentId).get();
-            return new ResponseEntity<Student>(selectedSweater,HttpStatus.OK);
-        } else {
-            return new ResponseEntity<Student>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    public ResponseEntity<Student> updateStudent(Student studentToUpdate, Integer id) {
+    public Student updateStudent(Student studentToUpdate, Integer id) {
         if (studentRepository.existsById(id)) {
+            Student oldStudent = new Student(studentRepository.findById(id).get());
             studentToUpdate.setId(id);
-            Student updatedSweater = studentRepository.save(studentToUpdate);
-            return new ResponseEntity<Student>(updatedSweater, HttpStatus.OK);
+            studentRepository.save(studentToUpdate);
+            return oldStudent;
         } else {
-            return new ResponseEntity<Student>(HttpStatus.NOT_FOUND);
+            return null;
         }
     }
 
-    public List<Student> getAllStudents() {
-        return studentRepository.findAll();
-    }
-
-    public HttpStatus deleteStudent(Integer studentId) {
-        if (studentRepository.existsById(studentId)) {
-            studentRepository.deleteById(studentId);
-            return HttpStatus.OK;
-        } else {
-            return HttpStatus.NOT_FOUND;
-        }
+    @Override
+    protected JpaRepository<Student, Integer> getRepository() {
+        return studentRepository;
     }
 
     public List<Student> findAll() {
