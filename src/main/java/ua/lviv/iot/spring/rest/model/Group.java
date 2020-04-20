@@ -22,6 +22,15 @@ public class Group {
     public Group() {
     }
 
+    public Group(String name, Integer enrollmentYear) {
+        this.name = name;
+        this.enrollmentYear = enrollmentYear;
+    }
+
+    public Group(Group group) {
+        this(group.getName(), group.getEnrollmentYear());
+    }
+
     public Integer getId() {
         return this.id;
     }

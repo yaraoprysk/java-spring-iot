@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@Table(name = "student")
 @NamedNativeQuery(name = "Student.findBestStudent", query = "select * from student where id=1")
 public class Student {
     private String firstName;
@@ -22,7 +23,10 @@ public class Student {
     private Group group;
 
     @JsonIgnoreProperties("students")
-    @ManyToMany(mappedBy = "students")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "Student_Subjects",
+            joinColumns = { @JoinColumn(name = "student_id", nullable = false)},
+            inverseJoinColumns = { @JoinColumn(name = "subject_id", nullable = true)})
     private Set<Subject> subjects;
 
     public Student(String firstName, String lastName) {
@@ -32,6 +36,10 @@ public class Student {
     }
 
     public Student() {
+    }
+
+    public Student(Student student) {
+        this(student.getFirstName(), student.getLastName());
     }
 
     public String getFirstName() {

@@ -23,6 +23,14 @@ public class Subject {
     public Subject() {
     }
 
+    public Subject(String name) {
+        this.name = name;
+    }
+
+    public Subject(Subject subject) {
+        this(subject.getName());
+    }
+
     public Integer getId() {
         return id;
     }
