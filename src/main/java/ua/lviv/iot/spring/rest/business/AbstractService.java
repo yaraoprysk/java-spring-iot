@@ -6,15 +6,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public abstract class AbstractService<T> {
+public abstract class AbstractService<University> {
 
-    protected abstract JpaRepository<T,Integer> getRepository();
+    protected abstract JpaRepository<University,Integer> getRepository();
 
-    public T create(T t) {
-        return getRepository().save(t);
+    public University create(University university) {
+        return getRepository().save(university);
     }
 
-    public T findById(Integer id) {
+    public University findById(Integer id) {
         if (getRepository().findById(id).isPresent()){
             return getRepository().findById(id).get();
         } else {
@@ -22,13 +22,13 @@ public abstract class AbstractService<T> {
         }
     }
 
-    public List<T> getAll() {
+    public List<University> getAll() {
         return getRepository().findAll();
     }
 
-    public T delete(Integer id) {
+    public University delete(Integer id) {
         if (getRepository().findById(id).isPresent()){
-            T possibleObject = getRepository().findById(id).get();
+            University possibleObject = getRepository().findById(id).get();
             getRepository().deleteById(id);
             return possibleObject;
         } else {
@@ -36,7 +36,7 @@ public abstract class AbstractService<T> {
         }
     }
 
-    public List<T> findAll() {
+    public List<University> findAll() {
         return getRepository().findAll();
     }
 
